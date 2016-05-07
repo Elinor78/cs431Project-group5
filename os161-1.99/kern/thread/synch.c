@@ -162,7 +162,8 @@ lock_create(const char *name)
                 kfree(lock);
                 return NULL;
         }
-     #if OPT_A1
+
+     #if OPT_A1 //*****edited
     // 
   
      lock->lk_wchan= wchan_create(lock->lk_name);
@@ -180,8 +181,9 @@ return NULL;
       //lock->lk_thread=NULL;
      return lock;
     #else
-    #endif
-        // add stuff here as needed
+    #endif    
+    //*****edited
+        
         
         
 }
@@ -190,7 +192,7 @@ void
 lock_destroy(struct lock *lock)
 {
         KASSERT(lock != NULL);
-#if OPT_A1
+#if OPT_A1//*****edited
     spinlock_cleanup(&lock->lk_th_lock);
   if(lock->lk_wchan != NULL)
   wchan_destroy(lock->lk_wchan);
@@ -199,14 +201,14 @@ lock_destroy(struct lock *lock)
         // add stuff here as needed
 #else
 #endif      
-       
+       //*****edited
 
 }
 
 void
 lock_acquire(struct lock *lock)
 {
-  #if OPT_A1
+  #if OPT_A1    //*****edited
   KASSERT(lock != NULL);
   
   KASSERT(curthread->t_in_interrupt == false);
@@ -224,7 +226,7 @@ lock_acquire(struct lock *lock)
   KASSERT(lock->lk_th_holder == NULL);
   lock->lk_th_holder = curthread;
   spinlock_release(&lock->lk_th_lock);
-  
+  //*****edited
 
 #else
 
@@ -238,7 +240,7 @@ void
 lock_release(struct lock *lock)
 {
   #if OPT_A1
-
+//*****edited
   KASSERT(lock != NULL);
   spinlock_acquire(&lock->lk_th_lock);
   lock->lk_th_holder = NULL;
@@ -249,27 +251,27 @@ lock_release(struct lock *lock)
   #else
         // Write this
 
-       // (void)lock;  // suppress warning until code gets written
+       // (void)lock;  //original // suppress warning until code gets written
 #endif
-
+//*****edited
 }
 
 bool
 lock_do_i_hold(struct lock *lock)
 {
         // Write this
-#if OPT_A1
+#if OPT_A1//*****edited
   KASSERT(lock!=NULL);
   return (lock->lk_th_holder == curthread);
 
 
 #else        
-//(void)lock;  // suppress warning until code gets written
+//(void)lock;  //original // suppress warning until code gets written
         
 
         //return true; // dummy until code gets written
 #endif
-
+//*****edited
 }
 
 
@@ -294,7 +296,7 @@ cv_create(const char *name)
                 return NULL;
         }
         #if OPT_A1
-
+//*****edited
         cv->cv_wchan= wchan_create(cv->cv_name);
         if(cv->cv_wchan==NULL){
           kfree(cv->cv_name);
@@ -306,7 +308,7 @@ cv_create(const char *name)
         return cv;
         #else
         #endif
-
+//*****edited
         // add stuff here as needed
         
         //return cv;
@@ -318,13 +320,13 @@ cv_destroy(struct cv *cv)
         KASSERT(cv != NULL);
 
         #if OPT_A1
-        
+        //*****edited
         spinlock_cleanup(&cv->cv_lock);
         if(cv->cv_wchan!=NULL){
 
           wchan_destroy(cv->cv_wchan);
 
-        }
+        }//*****edited
         kfree(cv->cv_name);
         kfree(cv);
         #else
@@ -337,17 +339,17 @@ cv_destroy(struct cv *cv)
 void
 cv_wait(struct cv *cv, struct lock *lock)
 {
-  //(void)cv;
-  //(void)lock;
+  //(void)cv; //original
+  //(void)lock; //original
   #if OPT_A1
  // KASSERT(curthread->t_in_interrupt==false);
- 
+ //*****edited
   wchan_lock(cv->cv_wchan);
    lock_release(lock);
   wchan_sleep(cv->cv_wchan);
   lock_acquire(lock);
   #else
-  #endif
+  #endif//*****edited
         // Write this
    //     (void)cv;    // suppress warning until code gets written
        // (void)lock;  // suppress warning until code gets written
@@ -355,9 +357,9 @@ cv_wait(struct cv *cv, struct lock *lock)
 
 void
 cv_signal(struct cv *cv, struct lock *lock)
-{//(void)cv;
-  //(void)lock;
-  #if OPT_A1
+{//(void)cv; //original 
+  //(void)lock;  //original
+  #if OPT_A1   //*****edited
   KASSERT(lock!=NULL);
   KASSERT(cv!=NULL);
   if(lock_do_i_hold(lock)){
@@ -367,6 +369,7 @@ cv_signal(struct cv *cv, struct lock *lock)
 
   #else
   #endif
+  //*****edited
         // Write this
 	//(void)cv;    // suppress warning until code gets written
 	//(void)lock;  // suppress warning until code gets written
@@ -375,9 +378,10 @@ cv_signal(struct cv *cv, struct lock *lock)
 void
 cv_broadcast(struct cv *cv, struct lock *lock)
 {
-  //(void)cv;
-  //(void)lock;
+  //(void)cv;   //original
+  //(void)lock;  //original
 #if OPT_A1
+  //*****edited
   KASSERT(lock!=NULL);
   KASSERT(cv!=NULL);
   if(lock_do_i_hold(lock)){
@@ -387,7 +391,7 @@ cv_broadcast(struct cv *cv, struct lock *lock)
 
 #else
 #endif
-
+//*****edited
 	// Write this
 //	(void)cv;    // suppress warning until code gets written
 	//(void)lock;  // suppress warning until code gets written
