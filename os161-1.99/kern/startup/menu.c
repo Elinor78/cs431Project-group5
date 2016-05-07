@@ -288,6 +288,17 @@ cmd_quit(int nargs, char **args)
 	thread_exit();
 	return 0;
 }
+/*
+ *Command for enabling debugging messages
+ */
+static
+int
+cmd_dth(int nargs, char **args)
+{	(void)nargs;
+	(void)args;
+	dbflags=DB_THREADS;
+	return 0;
+}
 
 /*
  * Command for mounting a filesystem.
@@ -435,6 +446,7 @@ static const char *opsmenu[] = {
 	"[cd]      Change directory          ",
 	"[pwd]     Print current directory   ",
 	"[sync]    Sync filesystems          ",
+	"[dth]     Enable DB_THREADS debugging",
 	"[panic]   Intentional panic         ",
 	"[q]       Quit and shut down        ",
 	NULL
@@ -543,6 +555,7 @@ static struct {
 	{ "pf",		printfile },
 	{ "cd",		cmd_chdir },
 	{ "pwd",	cmd_pwd },
+	{ "dth", 	cmd_dth},
 	{ "sync",	cmd_sync },
 	{ "panic",	cmd_panic },
 	{ "q",		cmd_quit },
