@@ -179,7 +179,7 @@ return NULL;
       //lock->lk_release =1;
       lock->lk_th_holder = NULL;
       //lock->lk_thread=NULL;
-     return lock;
+     return lock; //original
     #else
     #endif    
     //*****edited
@@ -196,8 +196,8 @@ lock_destroy(struct lock *lock)
     spinlock_cleanup(&lock->lk_th_lock);
   if(lock->lk_wchan != NULL)
   wchan_destroy(lock->lk_wchan);
- kfree(lock->lk_name);
-        kfree(lock);
+ kfree(lock->lk_name); //original
+        kfree(lock); //original
         // add stuff here as needed
 #else
 #endif      
@@ -269,7 +269,7 @@ lock_do_i_hold(struct lock *lock)
 //(void)lock;  //original // suppress warning until code gets written
         
 
-        //return true; // dummy until code gets written
+        //return true; //original // dummy until code gets written
 #endif
 //*****edited
 }
@@ -304,8 +304,8 @@ cv_create(const char *name)
           return NULL;
 
         }
-        spinlock_init(&cv->cv_lock);
-        return cv;
+        spinlock_init(&cv->lk_cv);
+        return cv;//original
         #else
         #endif
 //*****edited
@@ -317,11 +317,11 @@ cv_create(const char *name)
 void
 cv_destroy(struct cv *cv)
 {
-        KASSERT(cv != NULL);
+        KASSERT(cv != NULL); //original
 
         #if OPT_A1
         //*****edited
-        spinlock_cleanup(&cv->cv_lock);
+        spinlock_cleanup(&cv->lk_cv);
         if(cv->cv_wchan!=NULL){
 
           wchan_destroy(cv->cv_wchan);
