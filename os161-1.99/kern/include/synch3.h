@@ -26,21 +26,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#include "opt-A1.h"
-
 
 #ifndef _SYNCH_H_
 #define _SYNCH_H_
 
-//#if OPT_A1
- //#include <queue.h>
- //#endif
 /*
  * Header file for synchronization primitives.
  */
+
+
 #include <spinlock.h>
-
-
+#include "opt-A1.h"
 /*
  * Dijkstra-style semaphore.
  *
@@ -78,16 +74,14 @@ void V(struct semaphore *);
  */
 struct lock {
         char *lk_name;
-#if OPT_A1
-  /*      volatile int occupied;
-        volatile struct thread *own;*/
-        struct wchan *lk_wchan;
-        struct spinlock lk_th_lock;
-        volatile struct thread *lk_th_holder;
-#else
-#endif
         // add what you need here
         // (don't forget to mark things volatile as needed)
+        #if OPT_A1
+        struct wchan *lock_wchan;
+        struct spinlock lock_spinlock;
+        volatile bool lock_status;
+        volatile struct thread *lock_holder;
+        #endif
 };
 
 struct lock *lock_create(const char *name);
@@ -107,9 +101,7 @@ void lock_acquire(struct lock *);
 void lock_release(struct lock *);
 bool lock_do_i_hold(struct lock *);
 void lock_destroy(struct lock *);
-//#if OPT_A1
-//int lock_tryacquire(struct lock*);
-//#endif
+
 
 /*
  * Condition variable.
@@ -127,10 +119,11 @@ void lock_destroy(struct lock *);
 
 struct cv {
         char *cv_name;
-        struct wchan *cv_wchan;
-        struct spinlock lk_cv;
         // add what you need here
         // (don't forget to mark things volatile as needed)
+        #if OPT_A1
+        struct wchan *cv_wchan;
+        #endif
 };
 
 struct cv *cv_create(const char *name);
