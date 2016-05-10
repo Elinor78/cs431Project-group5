@@ -370,15 +370,17 @@ void
 cv_broadcast(struct cv *cv, struct lock *lock)
 {
     // Write this
-        //panic("test 3\n");
+        //panic("test 2\n");
 
 #if OPT_A1
   KASSERT(lock!=NULL);
   KASSERT(cv!=NULL);
-  if(lock_do_i_hold(lock)){
+  //if(lock_do_i_hold(lock)){
     wchan_wakeall(cv->cv_wchan);
-    lock_acquire(lock);
-  }
+    //lock_acquire(lock);
+        //panic("test 3\n");
+
+  //}
 
 #else
 (void)cv;    // suppress warning until code gets written
