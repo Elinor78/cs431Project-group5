@@ -84,6 +84,7 @@ struct lock {
         struct wchan *lk_wchan;
         struct spinlock lk_th_lock;
         volatile struct thread *lk_th_holder;
+        volatile struct cpu *lk_cpu;
 #else
 #endif
         // add what you need here

@@ -215,6 +215,7 @@ lock_acquire(struct lock *lock)
 
         KASSERT(lock->lk_th_holder == NULL);
         lock->lk_th_holder = curthread;
+        lock->lk_cpu = curcpu;
         spinlock_release(&lock->lk_th_lock);
 
         #else
@@ -329,7 +330,7 @@ cv_wait(struct cv *cv, struct lock *lock)
   //KASSERT(curthread->t_in_interrupt==false); makes no diff
             //KASSERT(lock!=NULL);//make no diff
         //KASSERT(cv!=NULL);//make no diff
-        panic("test\n");
+        //panic("test\n");
 
   wchan_lock(cv->cv_wchan);
    lock_release(lock);
@@ -346,7 +347,7 @@ void
 cv_signal(struct cv *cv, struct lock *lock)
 {
         // Write this
-        panic("test 2\n");
+        //panic("test 2\n");
 
   #if OPT_A1   
   KASSERT(lock!=NULL);
@@ -369,7 +370,7 @@ void
 cv_broadcast(struct cv *cv, struct lock *lock)
 {
     // Write this
-        panic("test 3\n");
+        //panic("test 3\n");
 
 #if OPT_A1
   KASSERT(lock!=NULL);
