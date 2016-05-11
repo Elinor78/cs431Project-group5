@@ -300,6 +300,7 @@ cv_broadcast(struct cv *cv, struct lock *lock)
 //panic("test 2\n");
 #if OPT_A1
 KASSERT(lock!=NULL);
+
 KASSERT(cv!=NULL);
 //if(lock_do_i_hold(lock)){
 wchan_wakeall(cv->cv_wchan);
